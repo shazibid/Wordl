@@ -127,7 +127,7 @@ void errorOutput(char& answer) {
     }
 }
 
-//uses a random number generator to pick a number between 1-34 and selects that word from the array
+//uses a random number generator to pick a number between 0-34 and selects that word from the array
 string selectWord(string& selectedWord, const list<string> words, int wordCount) {
     random_device rd;
     mt19937 gen(rd());
