@@ -80,6 +80,9 @@ int main() {
     return 0;
 }
 
+//--------------------------------------------
+
+//function to obtain guesses and checks to see if guess is a 5 letter word, incriments number of guesses after each pass through
 string getWord(string& word, int guessCount) {
     cout << "Enter guess number #" << guessCount + 1 << ":\n";
     cin >> word;
@@ -101,6 +104,7 @@ string getWord(string& word, int guessCount) {
     return word;
 }
 
+//function to compare guess string to rng string to create a new string to show the user which letters are accurate and whic are not
 void checkGuess(string& check, string word, string selectedWord) {
     for(int i = 0; i < word.length(); i++) {
         if (word[i] == selectedWord[i]) {
