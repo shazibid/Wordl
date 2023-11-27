@@ -1,30 +1,27 @@
 #include <iostream>
 #include <string>
+#include <iterator>
 #include <random>
+#include <list>
+#include "Words.h"
 using namespace std;
 
 string getWord(string& word, int guessCount);
 void checkGuess(string& check, string word, string selectedWord);
 void errorOutput(char& answer);
-string selectWord(string& selectedWord, const string words[], int wordCount);
+string selectWord(string& selectedWord, const list<string> words, int wordCount);
 
 int main() {
 
     //initializing a pool of 35 5-letter words
-    const int wordCount = 35;
-    string words[wordCount] = {"amber", "blend", "climb", "drink", "eagle", "finch", "grasp", "happy", "icyth", "jolly",
-        "kiosk", "latch", "mirth", "nudge", "opera", "prism", "quirk", "rusty", "shrub", "twist",
-        "utter", "vexed", "wagon", "xerox", "yacht", "zebra", "flute", "glide", "haste", "inlay",
-        "jelly", "knack", "lunge", "mango", "nifty"};
-
+    const int wordCount = words.size();
     string word;
     string selectedWord;
-    
     char answer = 'Y';
 
     //-------------------------------------------
 
-    cout << "Welcome to Wordle! Would you like to play? (Y or N)\t";
+    cout << "Welcome to Wordl! Would you like to play? (Y or N):\t";
     cin >> answer;
     errorOutput(answer);
 
@@ -32,9 +29,13 @@ int main() {
         cout << "See instructions?\t";
         cin >> answer;
         errorOutput(answer);
+        cout << endl;
 
         while (toupper(answer) == 'Y') {
-            cout << "If the letter you guess is in the correct spot, there will be an X at that spot.\nIf the letter guessed exists within the WORDLE word, but is in the incorrect spot, there will be an O at that spot.\nIf you guessed a letter that doesnt exist in the word, there will be an underscore (_) to mark it.\nGood Luck!\n\n";
+            cout << "If the letter you guess is in the correct spot, there will be an X at that spot.\n";
+            cout << "If the letter guessed exists within the WORDLE word, but is in the incorrect spot, there will be an O at that spot.\n";
+            cout << "If you guessed a letter that doesnt exist in the word, there will be an underscore (_) to mark it.\n";
+            cout << "Good Luck!\n\n";
             break;
         }
 
@@ -74,18 +75,36 @@ int main() {
         }
     }
 
-    cout << "Thank you for playing Wordle!";
+    cout << "Thank you for playing Wordle!\n\n";
 
     return 0;
 }
 
+//--------------------------------------------
+
+//function to obtain guesses and checks to see if guess is a 5 letter word, incriments number of guesses after each pass through
 string getWord(string& word, int guessCount) {
-    cout << "Enter guess number #" << guessCount + 1 << ":\t";
+    cout << "Enter guess number #" << guessCount + 1 << ":\n";
     cin >> word;
+
+    while (word.length() > 5 || word.length() < 5) {
+        cout << "Error, guess may only be a 5 letter word, please try again:\n";
+        cin >> word;
+    }
+
+    string temp = "";
+
+    for (int i = 0; i < word.length(); i++) {
+        temp += tolower(word[i]);
+    }
+
+    word = temp;
+
     guessCount++;
     return word;
 }
 
+//function to compare guess string to rng string to create a new string to show the user which letters are accurate and whic are not
 void checkGuess(string& check, string word, string selectedWord) {
     for(int i = 0; i < word.length(); i++) {
         if (word[i] == selectedWord[i]) {
@@ -108,15 +127,17 @@ void errorOutput(char& answer) {
     }
 }
 
-//uses a random number generator to pick a number between 1-34 and selects that word from the array
-string selectWord(string& selectedWord, const string words[], int wordCount) {
+//uses a random number generator to pick a number between 0-34 and selects that word from the array
+string selectWord(string& selectedWord, const list<string> words, int wordCount) {
     random_device rd;
     mt19937 gen(rd());
 
     uniform_int_distribution<int> dis(0, wordCount - 1);
     int random_number = dis(gen);
 
-    selectedWord = words[random_number];
+    auto it = words.begin();
+    advance(it, random_number);
+    selectedWord = *it;
 
     return selectedWord;
 }
